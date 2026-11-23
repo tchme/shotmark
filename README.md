@@ -10,7 +10,7 @@ Shotmark («Кадр») — расширение для Chromium. Оно сни�
 
 ### Установка
 
-1. Скачайте `shotmark-0.4.2.zip` из [релизов GitHub](https://github.com/tchme/shotmark/releases) и распакуйте архив.
+1. Скачайте ZIP расширения из [релизов GitHub](https://github.com/tchme/shotmark/releases) и распакуйте архив.
 2. Откройте `chrome://extensions` и включите режим разработчика.
 3. Нажмите **Загрузить распакованное расширение** и выберите папку с `manifest.json`.
 4. Нажмите иконку расширения или `Alt+Shift+S`, чтобы выделить область. Сочетание можно изменить на `chrome://extensions/shortcuts`.
@@ -38,7 +38,7 @@ Shotmark is a Chromium extension for capturing and annotating part of a tab and 
 
 ### Install
 
-1. Download and extract `shotmark-0.4.2.zip` from [GitHub Releases](https://github.com/tchme/shotmark/releases), or clone this repository.
+1. Download and extract the extension ZIP from [GitHub Releases](https://github.com/tchme/shotmark/releases), or clone this repository.
 2. Open `chrome://extensions` and turn on Developer mode.
 3. Choose **Load unpacked** and select the extracted directory containing `manifest.json`.
 4. Click the extension icon or use **Alt+Shift+S** to start selecting a region. Set a different supported shortcut at `chrome://extensions/shortcuts`.

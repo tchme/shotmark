@@ -390,7 +390,37 @@ async function exportImage(write, progress, errorMessage, closeOnSuccess = true)
   }
 }
 
-const copyPng = () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png() })])
+async function copyPng() {
+  const clipboard = navigator.clipboard
+  const items = [new ClipboardItem({ 'image/png': png() })]
+  if (!('onclipboardchange' in clipboard)) {
+    // shortcut: older Chromium cannot confirm a write, retry once while the editor still has focus.
+    await clipboard.write(items)
+    await new Promise(resolve => setTimeout(resolve, 120))
+    if (document.hasFocus()) await clipboard.write(items)
+    return
+  }
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let confirm
+    const changed = new Promise(resolve => { confirm = resolve })
+    const onChange = event => {
+      if (event.types?.includes('image/png')) confirm(true)
+    }
+    let timeout
+    clipboard.addEventListener('clipboardchange', onChange)
+    try {
+      await clipboard.write(items)
+      const expired = new Promise(resolve => { timeout = setTimeout(() => resolve(false), 400) })
+      if (await Promise.race([changed, expired])) return
+    } finally {
+      clearTimeout(timeout)
+      clipboard.removeEventListener('clipboardchange', onChange)
+    }
+    if (!document.hasFocus()) break
+  }
+  throw new Error('Clipboard did not report a PNG write')
+}
 $('copy-image').addEventListener('click', () => exportImage(copyPng, 'Копируем снимок…', 'Не удалось скопировать снимок. Попробуйте ещё раз.'))
 $('save-image').addEventListener('click', () => exportImage(savePng, 'Сохраняем PNG…', 'PNG не сохранён. Попробуйте ещё раз.'))
 

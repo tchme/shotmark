@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Кадр — скриншоты и текст",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Скриншоты области вкладки, редактор и локальное распознавание текста.",
   "permissions": ["activeTab", "scripting", "clipboardWrite", "contextMenus", "downloads", "offscreen", "notifications"],
   "host_permissions": ["https://disk.yandex.ru/*"],

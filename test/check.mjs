@@ -553,15 +553,33 @@ try {
   console.log('Both successful Disk card actions closed the editor; failed actions preserved it')
 
   captureEditor = await captureCurrent()
-  let bytes = 0
-  await captureEditor.exposeFunction('storeCopiedSize', size => { bytes = size })
   await captureEditor.evaluate(() => {
-    navigator.clipboard.write = async ([item]) => window.storeCopiedSize((await item.getType('image/png')).size)
+    const clipboard = new EventTarget()
+    clipboard.onclipboardchange = null
+    clipboard.write = async () => { window.clipboardAttempts++ }
+    window.clipboardAttempts = 0
+    Object.defineProperty(navigator, 'clipboard', { value: clipboard })
+  })
+  await captureEditor.locator('#copy-image').click()
+  await expect(async () => (await captureEditor.locator('#status').textContent()).startsWith('Не удалось скопировать снимок'), 'Unconfirmed PNG write closed the editor')
+  assert.equal(await captureEditor.evaluate(() => window.clipboardAttempts), 2)
+
+  let bytes = 0
+  let attempts = 0
+  await captureEditor.exposeFunction('recordPngWrite', size => { bytes = size; attempts++ })
+  await captureEditor.evaluate(() => {
+    let attempt = 0
+    navigator.clipboard.write = async ([item]) => {
+      await window.recordPngWrite((await item.getType('image/png')).size)
+      if (++attempt !== 2) return
+      navigator.clipboard.dispatchEvent(Object.assign(new Event('clipboardchange'), { types: ['image/png'] }))
+    }
   })
   const closed = captureEditor.waitForEvent('close')
   await captureEditor.locator('#copy-image').click()
   await closed
   assert.ok(bytes > 1000)
+  assert.equal(attempts, 2)
   console.log('Inline picture OCR stayed in the tab, worked offline and followed the viewer and scrolling; screenshot copy still closes the editor')
 } catch (error) {
   console.error(errors)
