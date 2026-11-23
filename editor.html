@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Кадр — редактор скриншотов</title>
+  <link rel="icon" href="icon.png">
+  <link rel="stylesheet" href="editor.css">
+  <script defer src="ocr/tesseract.min.js"></script>
+  <script defer src="word-layer.js"></script>
+  <script type="module" src="editor.js"></script>
+</head>
+<body>
+  <header>
+    <div class="titlebar">
+      <img src="icon.png" alt="" width="28" height="28">
+      <h1>Кадр</h1>
+      <span class="file-name" id="file-name">Редактор скриншотов</span>
+      <button id="settings"><span aria-hidden="true">⌨</span> Горячая клавиша</button>
+    </div>
+    <div class="toolbar" id="tools" role="group" aria-label="Инструменты редактирования">
+      <button data-tool="arrow" aria-pressed="true"><span aria-hidden="true">↗</span> Стрелки</button>
+      <button data-tool="text" aria-pressed="false"><span aria-hidden="true">Aa</span> Текст</button>
+      <button data-tool="shape" aria-pressed="false"><span aria-hidden="true">◇</span> Фигуры</button>
+      <button data-tool="pen" aria-pressed="false"><span aria-hidden="true">✎</span> Маркер</button>
+      <button data-tool="hide" aria-pressed="false"><span aria-hidden="true">◩</span> Размыть</button>
+      <button data-tool="crop" aria-pressed="false"><span aria-hidden="true">⊡</span> Обрезать</button>
+      <div class="history" role="group" aria-label="История правок">
+        <button id="undo" aria-label="Отменить" title="Отменить (Ctrl+Z)" disabled>↶</button>
+        <button id="redo" aria-label="Вернуть" title="Вернуть (Ctrl+Shift+Z)" disabled>↷</button>
+      </div>
+    </div>
+    <div id="options" class="options">
+      <div id="visual-styles" role="group" aria-label="Стиль стрелки"></div>
+      <label id="style-label"><span>Стиль</span> <select id="style-select"></select></label>
+      <div id="palette" role="group" aria-label="Цвет">
+        <button style="--swatch:#ef4955" data-color="#ef4955" aria-pressed="true" aria-label="Красный" title="Красный"></button>
+        <button style="--swatch:#f4ba43" data-color="#f4ba43" aria-pressed="false" aria-label="Жёлтый" title="Жёлтый"></button>
+        <button style="--swatch:#4b91ef" data-color="#4b91ef" aria-pressed="false" aria-label="Синий" title="Синий"></button>
+        <button style="--swatch:#20a977" data-color="#20a977" aria-pressed="false" aria-label="Зелёный" title="Зелёный"></button>
+        <button style="--swatch:#ffffff" data-color="#ffffff" aria-pressed="false" aria-label="Белый" title="Белый"></button>
+        <button style="--swatch:#191e26" data-color="#191e26" aria-pressed="false" aria-label="Чёрный" title="Чёрный"></button>
+      </div>
+      <label id="weight-label"><span id="weight-caption">Толщина</span> <select id="weight"><option value="3">Тонкая</option><option value="6" selected>Средняя</option><option value="11">Толстая</option></select></label>
+      <span id="hint"></span>
+    </div>
+    <div id="ocr-tools" class="ocr-tools" hidden>
+      <span class="mode-icon" aria-hidden="true">▤</span>
+      <span class="ocr-hint">Выделите текст мышью и нажмите <kbd>Ctrl+C</kbd></span>
+      <button id="text-panel-toggle" aria-expanded="false" aria-controls="text-panel">Править текст</button>
+      <button id="copy-text">Копировать весь текст</button>
+      <button id="exit-ocr" aria-label="Выйти из режима текста" title="Выйти из режима текста (Esc)">×</button>
+    </div>
+  </header>
+  <main>
+    <div class="viewport" id="viewport" aria-label="Рабочая область">
+      <div class="surface" id="surface" hidden>
+        <canvas id="result" aria-label="Скриншот"></canvas>
+        <canvas id="preview" aria-hidden="true"></canvas>
+        <div id="ocr-layer" aria-label="Текст на скриншоте" hidden></div>
+        <textarea id="label-input" aria-label="Текст на снимке" aria-describedby="hint" spellcheck="false" maxlength="1200" hidden></textarea>
+      </div>
+      <div id="loading" role="status">Открываем снимок…</div>
+    </div>
+    <aside id="text-panel" hidden>
+      <label for="recognized-text">Распознанный текст</label>
+      <textarea id="recognized-text" spellcheck="false"></textarea>
+    </aside>
+  </main>
+  <footer>
+    <div class="view-info">
+      <div class="zoom" role="group" aria-label="Масштаб">
+        <button id="zoom-out" aria-label="Уменьшить масштаб">−</button>
+        <button id="zoom-fit" aria-label="Вписать в окно" title="Вписать в окно">100%</button>
+        <button id="zoom-in" aria-label="Увеличить масштаб">+</button>
+      </div>
+      <span id="resolution"></span>
+    </div>
+    <span id="status" role="status" aria-live="polite"></span>
+    <div class="actions" aria-label="Действия со снимком">
+      <button id="recognize" class="accent" aria-pressed="false"><span aria-hidden="true">▤</span> Распознать текст</button>
+      <button id="copy-image"><span aria-hidden="true">▣</span> Копировать</button>
+      <button id="save-image"><span aria-hidden="true">↓</span> Сохранить PNG</button>
+      <button id="save-disk" title="Загрузить PNG и создать публичную ссылку"><span aria-hidden="true">↑</span> На Яндекс Диск</button>
+    </div>
+  </footer>
+  <div id="disk-notice" hidden>
+    <button id="dismiss-disk-notice" aria-label="Закрыть уведомление">×</button>
+    <strong id="disk-title"></strong>
+    <p id="disk-message"></p>
+    <button id="disk-open" class="accent"></button>
+    <button id="disk-copy">Копировать ссылку</button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>Журнал релизов</title>
+<style>
+  * { box-sizing: border-box }
+  body { margin: 0; font: 16px 'Segoe UI', sans-serif; background: #eef1f6; color: #202e42; }
+  article { width: 1020px; min-height: 576px; margin: 30px 0 0 40px; background: #fff; border: 1px solid #dde4ed; }
+  nav { display: flex; align-items: center; height: 66px; padding: 0 32px; background: #eff5ff; border-bottom: 1px solid #dde8f7; color: #334e77; }
+  nav b { font-size: 19px; margin-left: 10px; }
+  nav small { margin-left: auto; font-size: 15px; }
+  .dot { background: #426bb6; width: 18px; height: 18px; border-radius: 5px; transform: rotate(15deg); }
+  main { padding: 32px; }
+  h1 { margin: 0 0 6px; font-size: 36px; font-weight: 700; letter-spacing: -.6px; }
+  p { margin: 0; color: #50617b; font-size: 17px; }
+  section { margin-top: 30px; border: 1px solid #d6e0ee; border-radius: 8px; padding: 19px 20px 22px; background: #f6f9ff; }
+  h2 { margin: 0 0 7px; font-size: 22px; }
+  table { margin-top: 26px; border-collapse: collapse; text-align: left; width: 100%; }
+  td, th { padding: 12px 13px; border-bottom: 1px solid #dee5ef; }
+  th { background: #f1f4f9; color: #4c5e79; font-size: 14px; }
+  td:last-child { color: #35694f; }
+</style>
+<article>
+  <nav><span class="dot"></span><b>Север</b><small>Рабочее пространство</small></nav>
+  <main>
+    <h1>Журнал релизов</h1>
+    <p>Обновления рабочей среды за ноябрь</p>
+    <section>
+      <h2>Релиз 1.8 готов к проверке</h2>
+      <p>Сборка включает обновление поиска и экспорт отчётов.</p>
+    </section>
+    <table>
+      <thead><tr><th>Задача</th><th>Раздел</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td>SR-128</td><td>Поиск по проектам</td><td>Готово</td></tr>
+        <tr><td>SR-134</td><td>Export report</td><td>На проверке</td></tr>
+        <tr><td>SR-141</td><td>Внутренний черновик</td><td>Запланировано</td></tr>
+      </tbody>
+    </table>
+  </main>
+</article>

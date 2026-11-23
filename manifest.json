@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Кадр — скриншоты и текст",
+  "version": "0.4.2",
+  "description": "Скриншоты области вкладки, редактор и локальное распознавание текста.",
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "contextMenus", "downloads", "offscreen", "notifications"],
+  "host_permissions": ["https://disk.yandex.ru/*"],
+  "background": { "service_worker": "capture.js", "type": "module" },
+  "action": { "default_title": "Кадр — снять область", "default_icon": "icon.png" },
+  "icons": { "128": "icon.png" },
+  "commands": { "_execute_action": { "suggested_key": { "default": "Alt+Shift+S" } } },
+  "content_security_policy": { "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'" }
+}
